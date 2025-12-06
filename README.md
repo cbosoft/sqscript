@@ -19,3 +19,18 @@ Pass one or more SQL scripts to be run. To provide input to the program, pass st
 echo "Greetings!" | sqscript foo.sql
 ```
 This is then available in SQL in the `StandardInput(ID, Line)` table. Output is received by reading from the table `StandardOutput(ID, Line)`. There is no `StandardError` table.
+
+
+`sqscript` ignores shebang lines, so you can now make your SQL scripts executable like you always wanted:
+
+```SQL
+#!/usr/bin/env sqscript
+INSERT INTO StandardOutput(Line) Values ('Hello, World!');
+```
+
+If the script is called `test.sql`, run with:
+```
+$ chmod +x test.sql
+$ ./test.sql
+> Hello, World!
+```
