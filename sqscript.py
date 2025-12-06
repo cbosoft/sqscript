@@ -10,6 +10,14 @@ def parse_args():
     return parser.parse_args()
 
 
+def read_sql(path: Path):
+    with open(path) as f:
+        lines = f.readlines()
+    if lines[0].startswith('#!'):
+        lines = lines[1:]
+    return ''.join(lines)
+
+
 def main():
     args = parse_args()
 
@@ -21,9 +29,8 @@ def main():
         for line in sys.stdin.readlines():
             db.execute('INSERT INTO StandardInput (Line) VALUES (?)', (line,))
 
-    for script in args.scripts:
-        with open(script) as f:
-            db.executescript(f.read())
+    for path in args.scripts:
+        db.executescript(read_sql(path))
 
         output = db.execute('SELECT Line FROM StandardOutput ORDER BY ID ASC;').fetchall()
         for line, in output:
